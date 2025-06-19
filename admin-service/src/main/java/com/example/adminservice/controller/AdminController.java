@@ -8,6 +8,7 @@ import com.example.adminservice.entity.StatisticsDTO;
 import com.example.adminservice.service.AdminService;
 import com.example.companyservice.entity.Company;
 import com.example.jobseekerservice.entity.JobSeeker;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +36,13 @@ public class AdminController {
 
 
     @GetMapping("/statistics")
+    @ApiOperation("获取统计信息")
     public StatisticsDTO getStatistics() {
         return adminService.getStatistics();
     }
 
     @GetMapping("/stats")
+    @ApiOperation("获取统计数据")
     public Map<String, Long> getSystemStatistics() {
         Map<String, Long> stats = new HashMap<>();
         stats.put("companyCount", adminService.getCompanyCount());
@@ -50,6 +53,7 @@ public class AdminController {
     }
 
     @GetMapping("/companies")
+    @ApiOperation("获取所有公司信息")
     public List<CompanyDTO> getAllCompanies() {
         List<Company> companies = companyClient.getAllCompanies();
         return companies.stream().map(this::convertToDTO).collect(Collectors.toList());
@@ -57,6 +61,7 @@ public class AdminController {
 
 
     @GetMapping("/jobseekers")
+    @ApiOperation("获取所有求职者信息")
     public List<JobSeekerDTO> getAllJobSeekers() {
         List<JobSeeker> seekers = jobSeekerClient.getAllJobSeekers();
         return seekers.stream().map(this::convertToDTO).collect(Collectors.toList());
