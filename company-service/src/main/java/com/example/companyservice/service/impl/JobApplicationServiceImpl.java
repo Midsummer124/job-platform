@@ -28,4 +28,25 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     public boolean updateStatus(Long applicationId, String status) {
         return applicationMapper.updateApplicationStatus(applicationId, status) > 0;
     }
+
+    @Override
+    public JobApplication getById(Long id) {
+        return applicationMapper.selectById(id);
+    }
+
+    @Override
+    public List<JobApplication> getAll() {
+        return applicationMapper.selectList(null);
+    }
+
+    @Override
+    public boolean createApplication(JobApplication jobApplication) {
+        return applicationMapper.insert(jobApplication) > 0;
+    }
+
+    @Override
+    public boolean deleteById(Long id) {
+        return applicationMapper.deleteById(id) > 0;
+    }
+
 }
