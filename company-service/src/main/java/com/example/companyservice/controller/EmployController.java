@@ -46,5 +46,36 @@ public class EmployController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("更新失败");
         }
     }
+    @ApiOperation("根据 ID 获取投递记录")
+    @GetMapping("/application/{id}")
+    @PreAuthorize("hasAnyRole('ENTERPRISE', 'ADMIN')")
+    public ResponseEntity<JobApplication> getApplication(@PathVariable Long id) {
+        JobApplication app = applicationService.getById(id);
+        return app != null ? ResponseEntity.ok(app) : ResponseEntity.notFound().build();
+    }
+
+    @ApiOperation("获取所有投递记录")
+    @GetMapping("/application")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<List<JobApplication>> getAllApplications() {
+        return ResponseEntity.ok(applicationService.getAll());
+    }
+
+    @ApiOperation("添加投递记录")
+    @PostMapping("/application")
+    @PreAuthorize("hasAnyRole('USER', 'ENTERPRISE')")
+    public ResponseEntity<String> createApplication(@RequestBody JobApplication jobApplication) {
+        boolean created = applicationService.createApplication(jobApplication);
+        return created ? ResponseEntity.ok("创建成功") : ResponseEntity.status(HttpStatus.BAD_REQUEST).body("创建失败");
+    }
+
+    @ApiOperation("删除投递记录")
+    @DeleteMapping("/application/{id}")
+    @PreAuthorize("hasAnyRole('ENTERPRISE', 'ADMIN')")
+    public ResponseEntity<String> deleteApplication(@PathVariable Long id) {
+        boolean deleted = applicationService.deleteById(id);
+        return deleted ? ResponseEntity.ok("删除成功") : ResponseEntity.status(HttpStatus.NOT_FOUND).body("删除失败");
+    }
+
 }
 
