@@ -1,8 +1,10 @@
 package com.example.authserver.service;
 
 import com.example.authserver.exception.UserAlreadyExistsException;
+import com.example.authserver.model.CompanyUser;
 import com.example.authserver.model.User;
 import com.example.authserver.model.UserType;
+import com.example.authserver.repository.CompanyUserRepository;
 import com.example.authserver.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CompanyUserRepository companyUserRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CompanyUserRepository companyUserRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.companyUserRepository = companyUserRepository;
     }
 
     // *** Method to register a regular USER ***
@@ -30,9 +34,17 @@ public class UserService {
 
     // *** Method to register an ENTERPRISE user ***
     @Transactional
-    public User registerEnterpriseUser(String username, String password, String email, String phone) throws UserAlreadyExistsException {
+    public User registerEnterpriseUser(String username, String password, String email, String phone, Long company_id, String position, String department) throws UserAlreadyExistsException {
         // Call the internal save method with UserType.ENTERPRISE
-        return registerUser(username, password, email, phone, UserType.ENTERPRISE);
+        User savedUser = registerUser(username, password, email, phone, UserType.ENTERPRISE);
+        CompanyUser companyUser = new CompanyUser(
+                savedUser.getId(),
+                company_id,
+                position,
+                department
+        );
+        companyUserRepository.save(companyUser);
+        return savedUser;
     }
 
     // *** Internal method to handle the actual user creation and saving ***

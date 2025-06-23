@@ -10,6 +10,9 @@ public class RegisterRequest {
     private String email;
     private String phone;
     private String role;
+    private Long company_id;
+    private String position;
+    private String department;
     //    private Set<String> roles;
     // 可以添加其他注册时需要的字段
 }

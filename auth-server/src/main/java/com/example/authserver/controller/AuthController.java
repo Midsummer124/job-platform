@@ -59,8 +59,8 @@ public class AuthController {
     @PostMapping("/register/enterprise")
     public ResponseEntity<?> registerEnterpriseUser(@RequestBody RegisterRequest registerRequest) {
         try {
-            if (registerRequest.getUsername() == null || registerRequest.getPassword() == null || registerRequest.getEmail() == null) {
-                return ResponseEntity.badRequest().body("Username, password, and email are required.");
+            if (registerRequest.getUsername() == null || registerRequest.getPassword() == null || registerRequest.getEmail() == null || registerRequest.getCompany_id() == null) {
+                return ResponseEntity.badRequest().body("username, password, email and company_id are required.");
             }
             // Phone is optional
 
@@ -69,7 +69,10 @@ public class AuthController {
                     registerRequest.getUsername(),
                     registerRequest.getPassword(),
                     registerRequest.getEmail(),
-                    registerRequest.getPhone()
+                    registerRequest.getPhone(),
+                    registerRequest.getCompany_id(),
+                    registerRequest.getPosition(),
+                    registerRequest.getDepartment()
             );
             return ResponseEntity.ok("Enterprise user registered successfully!");
         } catch (UserAlreadyExistsException e) {

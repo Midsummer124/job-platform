@@ -8,6 +8,6 @@ import java.util.List;
 
 @FeignClient(name = "company-service")
 public interface CompanyClient {
-    @GetMapping("/api/company")
+    @GetMapping("company/api/company")
     List<Company> getAllCompanies();
 }
