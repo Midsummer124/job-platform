@@ -1,0 +1,24 @@
+server:
+  port: 8004
+
+spring:
+  application:
+    name: log-consumer-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  metrics:
+    tags:
+      application: log-consumer-service # ????????
+
+
+log:
+  file-path: logs/system-log.txt

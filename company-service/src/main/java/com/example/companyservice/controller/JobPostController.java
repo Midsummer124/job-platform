@@ -2,7 +2,9 @@ package com.example.companyservice.controller;
 
 import com.example.companyservice.entity.JobPost;
 import com.example.companyservice.service.JobPostService;
+import com.example.companyservice.utils.LogProducer;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,8 @@ public class JobPostController {
 
     @Resource
     private JobPostService jobPostService;
+    @Autowired
+    private LogProducer logProducer;
 
     @PostMapping
     @PreAuthorize("hasAnyRole( 'ENTERPRISE', 'ADMIN')")

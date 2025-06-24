@@ -2,11 +2,13 @@ package com.example.authserver.controller;
 
 import com.example.authserver.dto.LoginRequest;
 import com.example.authserver.dto.LoginResponse;
-import com.example.authserver.dto.RegisterRequest; // Use the same RegisterRequest DTO
+import com.example.authserver.dto.RegisterRequest;
 import com.example.authserver.dto.UserDetailsDto;
 import com.example.authserver.exception.UserAlreadyExistsException;
 import com.example.authserver.service.AuthService;
 import com.example.authserver.service.UserService;
+import com.example.authserver.utils.LogProducer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -19,6 +21,9 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
+
+    @Autowired
+    private LogProducer logProducer;
 
     public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
@@ -34,7 +39,9 @@ public class AuthController {
     @PostMapping("/register/user")
     public ResponseEntity<?> registerRegularUser(@RequestBody RegisterRequest registerRequest) {
         try {
+            logProducer.sendLog("auth-server", "INFO", "正在注册普通用户");
             if (registerRequest.getUsername() == null || registerRequest.getPassword() == null || registerRequest.getEmail() == null) {
+                logProducer.sendLog("auth-server", "INFO", "注册无效，缺失必要信息");
                 return ResponseEntity.badRequest().body("Username, password, and email are required.");
             }
             // Phone is optional
@@ -46,11 +53,13 @@ public class AuthController {
                     registerRequest.getEmail(),
                     registerRequest.getPhone()
             );
+            logProducer.sendLog("auth-server", "INFO", "成功注册");
             return ResponseEntity.ok("Regular user registered successfully!");
         } catch (UserAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+            logProducer.sendLog("auth-server", "INFO", "注册失败");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Regular user registration failed: " + e.getMessage());
         }
     }
@@ -59,7 +68,9 @@ public class AuthController {
     @PostMapping("/register/enterprise")
     public ResponseEntity<?> registerEnterpriseUser(@RequestBody RegisterRequest registerRequest) {
         try {
+            logProducer.sendLog("auth-server", "INFO", "正在注册公司用户");
             if (registerRequest.getUsername() == null || registerRequest.getPassword() == null || registerRequest.getEmail() == null || registerRequest.getCompany_id() == null) {
+                logProducer.sendLog("auth-server", "INFO", "注册无效，缺失必要信息");
                 return ResponseEntity.badRequest().body("username, password, email and company_id are required.");
             }
             // Phone is optional
@@ -74,6 +85,7 @@ public class AuthController {
                     registerRequest.getPosition(),
                     registerRequest.getDepartment()
             );
+            logProducer.sendLog("auth-server", "INFO", "成功注册公司用户");
             return ResponseEntity.ok("Enterprise user registered successfully!");
         } catch (UserAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
@@ -88,9 +100,10 @@ public class AuthController {
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
         try {
             if (loginRequest.getUsername() == null || loginRequest.getPassword() == null) {
+                logProducer.sendLog("auth-server", "INFO", "登录无效，缺失必要信息");
                 return ResponseEntity.badRequest().body("Username and password are required.");
             }
-
+            logProducer.sendLog("auth-server", "INFO", "登录成功，发放token");
             String token = authService.login(loginRequest.getUsername(), loginRequest.getPassword());
             return ResponseEntity.ok(new LoginResponse(token));
         } catch (AuthenticationException e) {
