@@ -32,6 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
+logs/
 *.h2.db
 
 src/main/resources/application*.properties
