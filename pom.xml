@@ -16,6 +16,7 @@
         <module>auth-server</module>
         <module>company-service</module>
         <module>admin-service</module>
+        <module>log-consumer-service</module>
     </modules>
 
     <parent>

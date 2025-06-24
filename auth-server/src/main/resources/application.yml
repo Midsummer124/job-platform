@@ -9,7 +9,7 @@ spring:
     datasource:
         url: jdbc:mysql://localhost:3306/job_platform?useSSL=false&serverTimezone=UTC # Replace with your database name and connection details
         username: root # Replace with your MySQL username
-        password: 4455 # Replace with your MySQL password
+        password: '0000' # Replace with your MySQL password
         driver-class-name: com.mysql.cj.jdbc.Driver
 
     jpa:
@@ -19,6 +19,11 @@ spring:
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.MySQL8Dialect # Or appropriate dialect for your MySQL version
+    rabbitmq:
+        host: localhost
+        port: 5672
+        username: guest
+        password: guest
 
 eureka:
     client:
@@ -30,3 +35,13 @@ eureka:
 jwt:
     secret: VGhpc0lzQVZlcnlTZWNyZXRLZXlGb3JKb2JQbGF0Zm9ybUF1dGhTZXJ2aWNl
     expiration: 3600000
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: health,info,metrics,prometheus
+    metrics:
+        tags:
+            application: auth-server # 每个服务不同命名
+

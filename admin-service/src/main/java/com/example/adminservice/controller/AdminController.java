@@ -6,6 +6,7 @@ import com.example.adminservice.entity.CompanyDTO;
 import com.example.adminservice.entity.JobSeekerDTO;
 import com.example.adminservice.entity.StatisticsDTO;
 import com.example.adminservice.service.AdminService;
+import com.example.adminservice.utils.LogProducer;
 import com.example.companyservice.entity.Company;
 import com.example.jobseekerservice.entity.JobSeeker;
 import io.swagger.annotations.ApiOperation;
@@ -34,16 +35,22 @@ public class AdminController {
     @Autowired
     private JobSeekerClient jobSeekerClient;
 
+    @Autowired
+    private LogProducer logProducer;
+
+
 
     @GetMapping("/statistics")
     @ApiOperation("获取统计信息")
     public StatisticsDTO getStatistics() {
+        logProducer.sendLog("admin-service", "INFO", "获取统计信息");
         return adminService.getStatistics();
     }
 
     @GetMapping("/stats")
     @ApiOperation("获取统计数据")
     public Map<String, Long> getSystemStatistics() {
+        logProducer.sendLog("admin-service", "INFO", "获取统计数据");
         Map<String, Long> stats = new HashMap<>();
         stats.put("companyCount", adminService.getCompanyCount());
         stats.put("jobSeekerCount", adminService.getJobSeekerCount());
@@ -55,6 +62,7 @@ public class AdminController {
     @GetMapping("/companies")
     @ApiOperation("获取所有公司信息")
     public List<CompanyDTO> getAllCompanies() {
+        logProducer.sendLog("admin-service", "INFO", "获取所有公司信息");
         List<Company> companies = companyClient.getAllCompanies();
         return companies.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
@@ -63,6 +71,7 @@ public class AdminController {
     @GetMapping("/jobseekers")
     @ApiOperation("获取所有求职者信息")
     public List<JobSeekerDTO> getAllJobSeekers() {
+        logProducer.sendLog("admin-service", "INFO", "获取所有求职者信息");
         List<JobSeeker> seekers = jobSeekerClient.getAllJobSeekers();
         return seekers.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
